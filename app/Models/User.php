@@ -8,6 +8,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+// Tambahkan import ini
+use App\Models\Role;
+use App\Models\Branch;
+use App\Models\Transaction;
+use App\Models\Purchase;
+
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
@@ -21,7 +27,9 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'branch_id',
         'password',
+        'role_id',
     ];
 
     /**
@@ -45,5 +53,29 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // =========================
+    // RELATIONSHIP
+    // =========================
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'cashier_id');
+    }
+
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class);
     }
 }
