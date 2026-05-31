@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -17,15 +18,22 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Sebagai testing saja
-Route::middleware(['auth', 'role:Owner'])
-    ->get('/owner', function () {
-        return 'Halaman Owner';
-    });
+Route::middleware(['auth'])->group(function () {
 
-Route::middleware(['auth', 'role:Manager'])
-    ->get('/manager', function () {
-        return 'Halaman Manager';
-    });
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+
+});
+
+// Sebagai testing saja
+// Route::middleware(['auth', 'role:Owner'])
+//     ->get('/owner', function () {
+//         return 'Halaman Owner';
+//     });
+
+// Route::middleware(['auth', 'role:Manager'])
+//     ->get('/manager', function () {
+//         return 'Halaman Manager';
+//     });
 
 require __DIR__.'/auth.php';
