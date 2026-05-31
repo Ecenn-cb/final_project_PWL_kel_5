@@ -17,4 +17,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Sebagai testing saja
+Route::middleware(['auth', 'role:Owner'])
+    ->get('/owner', function () {
+        return 'Halaman Owner';
+    });
+
+Route::middleware(['auth', 'role:Manager'])
+    ->get('/manager', function () {
+        return 'Halaman Manager';
+    });
+
 require __DIR__.'/auth.php';
