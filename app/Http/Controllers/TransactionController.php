@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Branch;
 use App\Models\Product;
 use App\Models\Stock;
 use App\Models\Transaction;
@@ -22,30 +23,87 @@ class TransactionController extends Controller
     {
         $products = Product::all();
 
-        return view('transactions.create', compact('products'));
+        $role = auth()->user()->role->role_name;
+
+        if ($role == 'Owner') {
+
+            $branches = Branch::all();
+
+            return view(
+                'transactions.create',
+                compact('products', 'branches')
+            );
+        }
+
+        return view(
+            'transactions.create',
+            compact('products')
+        );
     }
 
     public function store(Request $request)
     {
+        // Validasi berdasarkan role
+        if (auth()->user()->role->role_name == 'Owner') {
+
+            $request->validate([
+                'branch_id' => 'required|exists:branches,id',
+                'product_id' => 'required|exists:products,id',
+                'qty' => 'required|integer|min:1',
+            ]);
+
+            $branchId = $request->branch_id;
+
+        } else {
+
+            $request->validate([
+                'product_id' => 'required|exists:products,id',
+                'qty' => 'required|integer|min:1',
+            ]);
+
+            $branchId = auth()->user()->branch_id;
+        }
+
         DB::beginTransaction();
 
         try {
 
-            $product = Product::findOrFail($request->product_id);
+            $product = Product::findOrFail(
+                $request->product_id
+            );
 
             $stock = Stock::where(
                 'product_id',
                 $request->product_id
-            )->where(
+            )
+            ->where(
                 'branch_id',
-                auth()->user()->branch_id
-            )->first();
+                $branchId
+            )
+            ->first();
 
-            if (!$stock || $stock->stock < $request->qty) {
-                return back()->with(
-                    'error',
-                    'Stok tidak mencukupi'
-                );
+            if (!$stock) {
+
+                DB::rollBack();
+
+                return back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Data stok tidak ditemukan'
+                    );
+            }
+
+            if ($stock->stock < $request->qty) {
+
+                DB::rollBack();
+
+                return back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Stok tidak mencukupi'
+                    );
             }
 
             $subtotal =
@@ -53,11 +111,12 @@ class TransactionController extends Controller
                 $request->qty;
 
             $transaction = Transaction::create([
+
                 'invoice_number' =>
-                    'INV-' . time(),
+                    'INV-' . now()->format('YmdHis'),
 
                 'branch_id' =>
-                    auth()->user()->branch_id,
+                    $branchId,
 
                 'cashier_id' =>
                     auth()->id(),
@@ -70,6 +129,7 @@ class TransactionController extends Controller
             ]);
 
             TransactionDetail::create([
+
                 'transaction_id' =>
                     $transaction->id,
 
@@ -97,17 +157,33 @@ class TransactionController extends Controller
                 ->route('transactions.index')
                 ->with(
                     'success',
-                    'Transaksi berhasil'
+                    'Transaksi berhasil disimpan'
                 );
 
         } catch (\Exception $e) {
 
-            DB::rollback();
+            DB::rollBack();
 
-            return back()->with(
-                'error',
-                $e->getMessage()
-            );
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    $e->getMessage()
+                );
         }
+    }
+
+    public function show(Transaction $transaction)
+    {
+        $transaction->load([
+            'details.product',
+            'branch',
+            'cashier'
+        ]);
+
+        return view(
+            'transactions.show',
+            compact('transaction')
+        );
     }
 }

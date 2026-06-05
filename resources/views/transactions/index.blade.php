@@ -1,66 +1,118 @@
 <x-app-layout>
 
-<div class="p-6">
+    <div class="p-6">
 
-    <h1 class="text-2xl font-bold mb-4">
-        Data Transaksi
-    </h1>
+        <div class="flex justify-between items-center mb-4">
 
-    <a href="{{ route('transactions.create') }}"
-       class="bg-blue-500 text-white px-4 py-2 rounded">
+            <h1 class="text-2xl font-bold">
+                Data Transaksi
+            </h1>
 
-       Transaksi Baru
+            <a href="{{ route('transactions.create') }}"
+               class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
 
-    </a>
+                Transaksi Baru
 
-    <table class="w-full border mt-4">
+            </a>
 
-        <thead>
+        </div>
 
-            <tr>
+        @if(session('success'))
 
-                <th class="border p-2">
-                    Invoice
-                </th>
+            <div class="bg-green-100 border border-green-400 text-green-700 p-3 rounded mb-4">
+                {{ session('success') }}
+            </div>
 
-                <th class="border p-2">
-                    Total
-                </th>
+        @endif
 
-                <th class="border p-2">
-                    Tanggal
-                </th>
+        @if(session('error'))
 
-            </tr>
+            <div class="bg-red-100 border border-red-400 text-red-700 p-3 rounded mb-4">
+                {{ session('error') }}
+            </div>
 
-        </thead>
+        @endif
 
-        <tbody>
+        <div class="bg-white rounded shadow overflow-hidden">
 
-        @foreach($transactions as $transaction)
+            <table class="w-full border">
 
-            <tr>
+                <thead>
 
-                <td class="border p-2">
-                    {{ $transaction->invoice_number }}
-                </td>
+                    <tr class="bg-gray-100">
 
-                <td class="border p-2">
-                    Rp {{ number_format($transaction->total_price) }}
-                </td>
+                        <th class="border p-2">
+                            Invoice
+                        </th>
 
-                <td class="border p-2">
-                    {{ $transaction->transaction_date }}
-                </td>
+                        <th class="border p-2">
+                            Total
+                        </th>
 
-            </tr>
+                        <th class="border p-2">
+                            Tanggal
+                        </th>
 
-        @endforeach
+                        <th class="border p-2">
+                            Aksi
+                        </th>
 
-        </tbody>
+                    </tr>
 
-    </table>
+                </thead>
 
-</div>
+                <tbody>
+
+                    @forelse($transactions as $transaction)
+
+                        <tr>
+
+                            <td class="border p-2">
+                                {{ $transaction->invoice_number }}
+                            </td>
+
+                            <td class="border p-2">
+                                Rp {{ number_format($transaction->total_price, 0, ',', '.') }}
+                            </td>
+
+                            <td class="border p-2">
+                                {{ $transaction->transaction_date }}
+                            </td>
+
+                            <td class="border p-2">
+
+                                <a href="{{ route('transactions.show', $transaction->id) }}"
+                                   class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
+
+                                    Detail
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    @empty
+
+                        <tr>
+
+                            <td colspan="4"
+                                class="text-center p-4">
+
+                                Belum ada transaksi
+
+                            </td>
+
+                        </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
 
 </x-app-layout>

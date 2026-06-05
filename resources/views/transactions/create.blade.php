@@ -1,39 +1,51 @@
 <x-app-layout>
 
-<div class="p-6">
+    <div class="p-6">
 
-    <h1 class="text-2xl font-bold mb-4">
-        Transaksi Penjualan
-    </h1>
+        <h1 class="text-2xl font-bold mb-4">
+            Transaksi Penjualan
+        </h1>
 
-    @if(session('error'))
-        <div class="bg-red-100 p-3 rounded mb-3">
-            {{ session('error') }}
-        </div>
-    @endif
+        @if(session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 p-3 rounded mb-3">
+                {{ session('error') }}
+            </div>
+        @endif
 
-    <form action="{{ route('transactions.store') }}"
-          method="POST">
+        @if ($errors->any())
+            <div class="bg-red-100 border border-red-400 text-red-700 p-3 rounded mb-3">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>• {{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-        @csrf
+        <form action="{{ route('transactions.store') }}"
+              method="POST"
+              class="bg-white shadow rounded p-6">
 
-        <div class="mb-3">
+            @csrf
 
-            <label>Produk</label>
+            <!-- Cabang -->
+            @if(auth()->user()->role->role_name == 'Owner')
+
+        <div class="mb-4">
+
+            <label class="block mb-2 font-medium">
+                Cabang
+            </label>
 
             <select
-                name="product_id"
-                class="border w-full p-2 rounded">
+                name="branch_id"
+                class="border w-full p-2 rounded"
+                required>
 
-                @foreach($products as $product)
+                @foreach($branches as $branch)
 
-                    <option
-                        value="{{ $product->id }}">
-
-                        {{ $product->product_name }}
-                        -
-                        Rp {{ number_format($product->price) }}
-
+                    <option value="{{ $branch->id }}">
+                        {{ $branch->branch_name }}
                     </option>
 
                 @endforeach
@@ -42,27 +54,75 @@
 
         </div>
 
-        <div class="mb-3">
+    @endif
 
-            <label>Qty</label>
+            <!-- Produk -->
+            <div class="mb-4">
 
-            <input
-                type="number"
-                name="qty"
-                min="1"
-                class="border w-full p-2 rounded">
+                <label class="block mb-2 font-medium">
+                    Produk
+                </label>
 
-        </div>
+                <select
+                    name="product_id"
+                    class="border w-full p-2 rounded"
+                    required>
 
-        <button
-            class="bg-blue-500 text-white px-4 py-2 rounded">
+                    <option value="">
+                        -- Pilih Produk --
+                    </option>
 
-            Simpan Transaksi
+                    @foreach($products as $product)
 
-        </button>
+                        <option value="{{ $product->id }}">
+                            {{ $product->product_name }}
+                            -
+                            Rp {{ number_format($product->price, 0, ',', '.') }}
+                        </option>
 
-    </form>
+                    @endforeach
 
-</div>
+                </select>
+
+            </div>
+
+            <!-- Qty -->
+            <div class="mb-4">
+
+                <label class="block mb-2 font-medium">
+                    Jumlah
+                </label>
+
+                <input
+                    type="number"
+                    name="qty"
+                    min="1"
+                    required
+                    class="border w-full p-2 rounded">
+
+            </div>
+
+            <div class="flex gap-2">
+
+                <button
+                    type="submit"
+                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+
+                    Simpan Transaksi
+
+                </button>
+
+                <a href="{{ route('transactions.index') }}"
+                   class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">
+
+                    Kembali
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
 
 </x-app-layout>
