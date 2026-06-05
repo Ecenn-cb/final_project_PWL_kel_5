@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StockController;
+
 
 
 Route::get('/', function () {
@@ -26,6 +28,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('dashboard');
     Route::resource('categories', CategoryController::class);
     Route::resource('products', ProductController::class);
+    Route::resource('stocks', StockController::class);
 });
 
 
