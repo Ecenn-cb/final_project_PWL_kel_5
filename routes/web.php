@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\TransactionController;
-
+use App\Http\Controllers\ReportController;
 
 
 Route::get('/', function () {
@@ -33,7 +33,23 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('transactions', TransactionController::class);
 });
 
+//report
+Route::get('/reports', [ReportController::class, 'index'])
+    ->name('reports.index');
 
+Route::get('/reports/transactions', [ReportController::class, 'transactions'])
+    ->name('reports.transactions');
+
+Route::get('/reports/stocks', [ReportController::class, 'stocks'])
+    ->name('reports.stocks');
+
+Route::get('/reports/transactions/pdf',[ReportController::class, 'transactionPdf'])->name('reports.transactions.pdf');
+
+Route::get('/reports/stocks/pdf', [ReportController::class, 'stockPdf'])->name('reports.stocks.pdf');
+
+Route::get('/reports/transactions/pdf',[ReportController::class, 'transactionPdf'])->name('reports.transactions.pdf');
+
+Route::get('/reports/stocks/pdf',[ReportController::class, 'stockPdf'])->name('reports.stocks.pdf');
 
 // Sebagai testing saja
 // Route::middleware(['auth', 'role:Owner'])

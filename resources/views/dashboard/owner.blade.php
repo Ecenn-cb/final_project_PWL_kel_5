@@ -61,9 +61,9 @@
                 💳 Transaksi
             </a>
 
-            <a href="#"
-               class="bg-white shadow rounded-lg p-4 hover:bg-gray-100">
-                📄 Laporan
+            <a href="{{ route('reports.index') }}"
+                class="bg-white shadow rounded-lg p-4 hover:bg-gray-100">
+                    📄 Laporan
             </a>
 
         </div>

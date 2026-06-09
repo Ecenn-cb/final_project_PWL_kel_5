@@ -19,55 +19,55 @@
 
                     @if(Auth::user()->role->role_name == 'Owner')
 
-                        <x-nav-link :href="route('categories.index')">
+                        <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.index')">
                             Kategori
                         </x-nav-link>
 
-                        <x-nav-link :href="route('products.index')">
+                        <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.index')">
                             Produk
                         </x-nav-link>
 
-                        <x-nav-link :href="route('stocks.index')">
+                        <x-nav-link :href="route('stocks.index')" :active="request()->routeIs('stocks.index')">
                             Stok
                         </x-nav-link>
 
-                        <x-nav-link :href="route('transactions.index')">
+                        <x-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.index')">
                             Transaksi
                         </x-nav-link>
 
                     @elseif(Auth::user()->role->role_name == 'Manager')
 
-                        <x-nav-link :href="route('products.index')">
+                        <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.index')">
                             Produk
                         </x-nav-link>
 
-                        <x-nav-link :href="route('stocks.index')">
+                        <x-nav-link :href="route('stocks.index')" :active="request()->routeIs('stocks.index')">
                             Stok
                         </x-nav-link>
 
-                        <x-nav-link :href="route('transactions.index')">
+                        <x-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.index')">
                             Transaksi
                         </x-nav-link>
 
                     @elseif(Auth::user()->role->role_name == 'Supervisor')
 
-                        <x-nav-link :href="route('transactions.index')">
+                        <x-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.index')">
                             Monitoring Transaksi
                         </x-nav-link>
 
                     @elseif(Auth::user()->role->role_name == 'Kasir')
 
-                        <x-nav-link :href="route('transactions.index')">
+                        <x-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.index')">
                             Transaksi
                         </x-nav-link>
 
                     @elseif(Auth::user()->role->role_name == 'Gudang')
 
-                        <x-nav-link :href="route('stocks.index')">
+                        <x-nav-link :href="route('stocks.index')" :active="request()->routeIs('stocks.index')">
                             Stok
                         </x-nav-link>
 
-                        <x-nav-link :href="route('products.index')">
+                        <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.index')">
                             Produk
                         </x-nav-link>
 
