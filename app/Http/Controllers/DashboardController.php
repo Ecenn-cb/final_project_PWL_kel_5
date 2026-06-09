@@ -212,7 +212,29 @@ class DashboardController extends Controller
                 ));
 
             case 'Gudang':
-                return view('dashboard.gudang');
+
+                $branchId = auth()->user()->branch_id;
+
+                $totalProducts = Product::count();
+
+                $totalStocks = Stock::where(
+                    'branch_id',
+                    $branchId
+                )->sum('stock');
+
+                $lowStocks = Stock::with('product')
+                    ->where('branch_id', $branchId)
+                    ->where('stock', '<=', 10)
+                    ->get();
+
+                $lowStockCount = $lowStocks->count();
+
+                return view('dashboard.gudang', compact(
+                    'totalProducts',
+                    'totalStocks',
+                    'lowStocks',
+                    'lowStockCount'
+                ));
 
             default:
                 abort(403);
