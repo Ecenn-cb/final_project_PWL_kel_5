@@ -10,6 +10,48 @@
             Selamat datang, {{ auth()->user()->name }}
         </p>
 
+        <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl shadow-lg p-6 mb-8">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+
+                    <h2 class="text-2xl font-bold mb-4">
+                        🏪 Informasi Cabang
+                    </h2>
+
+                    <div class="space-y-2">
+
+                        <p class="text-lg">
+                            <span class="font-semibold">
+                                Cabang :
+                            </span>
+
+                            {{ auth()->user()->branch->branch_name }}
+                        </p>
+
+                        <p class="text-lg">
+                            <span class="font-semibold">
+                                Manager :
+                            </span>
+
+                            {{ auth()->user()->name }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="hidden md:block text-7xl opacity-20">
+
+                    🏬
+
+                </div>
+
+            </div>
+
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
 
             <div class="bg-blue-500 text-white rounded-lg shadow p-5">

@@ -44,7 +44,53 @@ class DashboardController extends Controller
                 ));
 
             case 'Manager':
-                return view('dashboard.manager');
+
+                $branchId = auth()->user()->branch_id;
+
+                $totalProducts = \App\Models\Product::count();
+
+                $totalStocks = \App\Models\Stock::where(
+                    'branch_id',
+                    $branchId
+                )->sum('stock');
+
+                $todayTransactions = \App\Models\Transaction::where(
+                    'branch_id',
+                    $branchId
+                )->whereDate(
+                    'transaction_date',
+                    today()
+                )->count();
+
+                $todayRevenue = \App\Models\Transaction::where(
+                    'branch_id',
+                    $branchId
+                )->whereDate(
+                    'transaction_date',
+                    today()
+                )->sum('total_price');
+
+                $latestTransactions = \App\Models\Transaction::where(
+                    'branch_id',
+                    $branchId
+                )
+                ->latest()
+                ->take(5)
+                ->get();
+
+                $lowStocks = \App\Models\Stock::with('product')
+                    ->where('branch_id', $branchId)
+                    ->where('stock', '<=', 10)
+                    ->get();
+
+                return view('dashboard.manager', compact(
+                    'totalProducts',
+                    'totalStocks',
+                    'todayTransactions',
+                    'todayRevenue',
+                    'latestTransactions',
+                    'lowStocks'
+                ));
 
             case 'Supervisor':
                 return view('dashboard.supervisor');
