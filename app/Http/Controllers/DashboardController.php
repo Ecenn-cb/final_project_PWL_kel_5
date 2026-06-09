@@ -154,7 +154,62 @@ class DashboardController extends Controller
                 ));
 
             case 'Kasir':
-                return view('dashboard.kasir');
+
+                $todayTransactions = Transaction::where(
+                    'cashier_id',
+                    auth()->id()
+                )
+                ->whereDate(
+                    'transaction_date',
+                    today()
+                )
+                ->count();
+
+                $todayRevenue = Transaction::where(
+                    'cashier_id',
+                    auth()->id()
+                )
+                ->whereDate(
+                    'transaction_date',
+                    today()
+                )
+                ->sum('total_price');
+
+                $monthTransactions = Transaction::where(
+                    'cashier_id',
+                    auth()->id()
+                )
+                ->whereMonth(
+                    'transaction_date',
+                    now()->month
+                )
+                ->count();
+
+                $monthRevenue = Transaction::where(
+                    'cashier_id',
+                    auth()->id()
+                )
+                ->whereMonth(
+                    'transaction_date',
+                    now()->month
+                )
+                ->sum('total_price');
+
+                $latestTransactions = Transaction::where(
+                    'cashier_id',
+                    auth()->id()
+                )
+                ->latest()
+                ->take(10)
+                ->get();
+
+                return view('dashboard.kasir', compact(
+                    'todayTransactions',
+                    'todayRevenue',
+                    'monthTransactions',
+                    'monthRevenue',
+                    'latestTransactions'
+                ));
 
             case 'Gudang':
                 return view('dashboard.gudang');
