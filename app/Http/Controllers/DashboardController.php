@@ -7,6 +7,7 @@ use App\Models\Branch;
 use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\Stock;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
@@ -93,7 +94,64 @@ class DashboardController extends Controller
                 ));
 
             case 'Supervisor':
-                return view('dashboard.supervisor');
+
+                $branchId = auth()->user()->branch_id;
+
+                $todayTransactions = Transaction::where(
+                    'branch_id',
+                    $branchId
+                )
+                ->whereDate(
+                    'transaction_date',
+                    today()
+                )
+                ->count();
+
+                $monthTransactions = Transaction::where(
+                    'branch_id',
+                    $branchId
+                )
+                ->whereMonth(
+                    'transaction_date',
+                    now()->month
+                )
+                ->count();
+
+                $todayRevenue = Transaction::where(
+                    'branch_id',
+                    $branchId
+                )
+                ->whereDate(
+                    'transaction_date',
+                    today()
+                )
+                ->sum('total_price');
+
+                $latestTransactions = Transaction::where(
+                    'branch_id',
+                    $branchId
+                )
+                ->latest()
+                ->take(10)
+                ->get();
+
+                $totalCashiers = User::whereHas(
+                    'role',
+                    fn($q) => $q->where('role_name', 'Kasir')
+                )
+                ->where(
+                    'branch_id',
+                    $branchId
+                )
+                ->count();
+
+                return view('dashboard.supervisor', compact(
+                    'todayTransactions',
+                    'monthTransactions',
+                    'todayRevenue',
+                    'latestTransactions',
+                    'totalCashiers'
+                ));
 
             case 'Kasir':
                 return view('dashboard.kasir');

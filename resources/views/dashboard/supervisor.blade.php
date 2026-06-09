@@ -10,6 +10,36 @@
             Selamat datang, {{ auth()->user()->name }}
         </p>
 
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8 border-l-8 border-yellow-500">
+
+            <div class="flex items-center">
+
+                <div class="bg-yellow-100 p-4 rounded-full mr-4">
+                    <span class="text-3xl">
+                        👨‍💼
+                    </span>
+                </div>
+
+                <div>
+
+                    <h2 class="text-xl font-bold text-gray-800">
+                        {{ auth()->user()->branch->branch_name }}
+                    </h2>
+
+                    <p class="text-gray-500">
+                        Supervisor Cabang
+                    </p>
+
+                    <p class="mt-2 font-semibold text-yellow-600">
+                        {{ auth()->user()->name }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
         <!-- Statistik -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
@@ -83,6 +113,67 @@
                     </tr>
 
                 @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6 mb-8">
+
+            <h2 class="text-xl font-bold mb-4">
+                Kasir Teraktif Hari Ini
+            </h2>
+
+            <table class="w-full border">
+
+                <thead>
+
+                    <tr class="bg-gray-100">
+
+                        <th class="border p-2">
+                            Nama Kasir
+                        </th>
+
+                        <th class="border p-2">
+                            Total Transaksi
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @forelse($topCashiers ?? [] as $cashier)
+
+                        <tr>
+
+                            <td class="border p-2">
+                                {{ $cashier->name }}
+                            </td>
+
+                            <td class="border p-2">
+                                {{ $cashier->transactions_count }}
+                            </td>
+
+                        </tr>
+
+                    @empty
+
+                        <tr>
+
+                            <td colspan="2"
+                                class="text-center p-4">
+
+                                Belum ada data
+
+                            </td>
+
+                        </tr>
+
+                    @endforelse
 
                 </tbody>
 
